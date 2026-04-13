@@ -2,12 +2,15 @@
 Unit tests for authentication module.
 Tests JWT creation/validation, password hashing, and role checking.
 """
-import pytest
-from app.auth.security import (
-    hash_password, verify_password,
-    create_access_token, create_refresh_token, decode_token,
-)
+
 from app.auth.dependencies import CurrentUser
+from app.auth.security import (
+    create_access_token,
+    create_refresh_token,
+    decode_token,
+    hash_password,
+    verify_password,
+)
 
 
 class TestPasswordHashing:
@@ -32,7 +35,12 @@ class TestPasswordHashing:
 
 class TestJWT:
     def test_create_and_decode_access_token(self):
-        data = {"sub": "usr-001", "email": "test@example.com", "role": "manager", "org_id": "org-001"}
+        data = {
+            "sub": "usr-001",
+            "email": "test@example.com",
+            "role": "manager",
+            "org_id": "org-001",
+        }
         token = create_access_token(data)
         payload = decode_token(token)
         assert payload is not None

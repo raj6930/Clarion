@@ -19,13 +19,13 @@ from __future__ import annotations
 
 import logging
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
-from sqlalchemy import and_, or_, true
+from sqlalchemy import and_, true
 from sqlalchemy.sql import ColumnElement
 
 if TYPE_CHECKING:
-    from sqlalchemy.orm import DeclarativeBase
+    pass
 
 logger = logging.getLogger("clarion.scopes")
 
@@ -33,13 +33,13 @@ logger = logging.getLogger("clarion.scopes")
 class DataScope(ABC):
     """
     Abstract base for data scope implementations.
-    
+
     Each scope defines how to filter database queries based on the
     user's role and scope configuration. The apply() method returns
     a SQLAlchemy WHERE clause that restricts data access.
     """
 
-    def __init__(self, user_id: str, scope_filter: Optional[dict] = None):
+    def __init__(self, user_id: str, scope_filter: dict | None = None):
         self.user_id = user_id
         self.scope_filter = scope_filter or {}
 
@@ -48,10 +48,10 @@ class DataScope(ABC):
         """
         Return a SQLAlchemy WHERE clause that filters the given model
         to only rows this user should see.
-        
+
         Args:
             model: SQLAlchemy model class (e.g., Case, Review)
-            
+
         Returns:
             SQLAlchemy boolean expression for WHERE clause
         """
@@ -66,12 +66,12 @@ class DataScope(ABC):
 class TeamScope(DataScope):
     """
     V1 default scope. User sees only data belonging to their team.
-    
+
     Requires the model to have a `team_id` column.
     The team_id is resolved from the user's team membership.
     """
 
-    def __init__(self, user_id: str, team_id: str, scope_filter: Optional[dict] = None):
+    def __init__(self, user_id: str, team_id: str, scope_filter: dict | None = None):
         super().__init__(user_id, scope_filter)
         self.team_id = team_id
 
@@ -93,11 +93,11 @@ class TeamScope(DataScope):
 class OrgScope(DataScope):
     """
     Admin/executive scope. User sees all data in their organisation.
-    
+
     Requires the model to have an `org_id` column.
     """
 
-    def __init__(self, user_id: str, org_id: str, scope_filter: Optional[dict] = None):
+    def __init__(self, user_id: str, org_id: str, scope_filter: dict | None = None):
         super().__init__(user_id, scope_filter)
         self.org_id = org_id
 
@@ -114,11 +114,12 @@ class OrgScope(DataScope):
 # V2 Scope Stubs — Ready for implementation
 # ═══════════════════════════════════════════════════════
 
+
 class AccountScope(DataScope):
     """
     V1: User sees data for their monitored accounts.
     Only includes cases NOT in excluded statuses.
-    
+
     Used by:
     - Managers in account view mode
     - CSM / Accounts roles (their only scope)
@@ -129,7 +130,7 @@ class AccountScope(DataScope):
         user_id: str,
         account_ids: list[str],
         excluded_statuses: list[str] | None = None,
-        scope_filter: Optional[dict] = None,
+        scope_filter: dict | None = None,
     ):
         super().__init__(user_id, scope_filter)
         self.account_ids = account_ids
@@ -137,10 +138,7 @@ class AccountScope(DataScope):
 
     def apply(self, model: Any) -> ColumnElement:
         if not self.account_ids:
-            logger.warning(
-                f"AccountScope for user {self.user_id} has no account_ids. "
-                f"Returning no results for safety."
-            )
+            logger.warning(f"AccountScope for user {self.user_id} has no account_ids. Returning no results for safety.")
             return false_clause()
 
         # Model must have sf_account_id (cases table via account FK)
@@ -220,35 +218,32 @@ def get_scope_for_user(
     user_id: str,
     org_id: str,
     role_data_scope_type: str,
-    role_data_scope_filter: Optional[dict] = None,
-    team_id: Optional[str] = None,
+    role_data_scope_filter: dict | None = None,
+    team_id: str | None = None,
 ) -> DataScope:
     """
     Resolve the correct DataScope implementation for a user based on their role.
-    
+
     This is the single entry point for all repository-layer data filtering.
     Called by dependency injection in route handlers.
-    
+
     Args:
         user_id: The authenticated user's ID
         org_id: The user's organisation ID
         role_data_scope_type: From the user's role record (team, org, account, etc.)
         role_data_scope_filter: From the user's role record (scope-specific config)
         team_id: The user's team ID (required for TeamScope)
-        
+
     Returns:
         A DataScope instance ready to apply to queries
-        
+
     Raises:
         ValueError: If the scope type is unknown
         NotImplementedError: If the scope type is planned for V2
     """
     scope_class = SCOPE_REGISTRY.get(role_data_scope_type)
     if not scope_class:
-        raise ValueError(
-            f"Unknown data scope type: {role_data_scope_type}. "
-            f"Available: {list(SCOPE_REGISTRY.keys())}"
-        )
+        raise ValueError(f"Unknown data scope type: {role_data_scope_type}. Available: {list(SCOPE_REGISTRY.keys())}")
 
     # Each scope type requires different constructor args
     if role_data_scope_type == "team":
@@ -277,4 +272,5 @@ def get_scope_for_user(
 def false_clause() -> ColumnElement:
     """SQLAlchemy expression that always evaluates to False."""
     from sqlalchemy import literal
+
     return literal(False)

@@ -3,11 +3,9 @@ Help Documentation Service
 Serves documentation content, supports search for chatbot RAG.
 Content is stored as markdown files in docs/ directory.
 """
+
 import logging
-import re
-from dataclasses import dataclass, field
-from pathlib import Path
-from typing import Optional
+from dataclasses import dataclass
 
 logger = logging.getLogger("clarion.help")
 
@@ -44,12 +42,14 @@ class HelpService:
         }
         for section_id, (title, content) in docs.items():
             self._sections[section_id] = HelpSection(
-                id=section_id, title=title, content=content,
+                id=section_id,
+                title=title,
+                content=content,
                 word_count=len(content.split()),
             )
         logger.info(f"Help docs loaded: {len(self._sections)} sections")
 
-    def get_section(self, section_id: str) -> Optional[HelpSection]:
+    def get_section(self, section_id: str) -> HelpSection | None:
         return self._sections.get(section_id)
 
     def get_all_sections(self) -> list[HelpSection]:
@@ -69,12 +69,14 @@ class HelpService:
             if score > 0:
                 # Extract snippet around first match
                 snippet = self._extract_snippet(section.content, terms[0])
-                results.append(SearchResult(
-                    section_id=section.id,
-                    section_title=section.title,
-                    snippet=snippet,
-                    relevance=score,
-                ))
+                results.append(
+                    SearchResult(
+                        section_id=section.id,
+                        section_title=section.title,
+                        snippet=snippet,
+                        relevance=score,
+                    )
+                )
 
         results.sort(key=lambda r: r.relevance, reverse=True)
         return results[:max_results]

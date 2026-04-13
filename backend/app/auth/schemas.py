@@ -1,8 +1,8 @@
 """
 Pydantic schemas for authentication requests and responses.
 """
+
 from pydantic import BaseModel, EmailStr, Field
-from typing import Optional
 
 
 class RegisterRequest(BaseModel):
@@ -32,7 +32,7 @@ class UserResponse(BaseModel):
     role: str
     org_id: str
     org_name: str
-    team_name: Optional[str] = None
+    team_name: str | None = None
 
 
 class RefreshRequest(BaseModel):

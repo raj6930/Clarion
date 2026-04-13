@@ -3,8 +3,8 @@ Integration Smoke Tests
 Verify all API endpoints are reachable and return expected status codes.
 Run against a live instance: pytest tests/integration/ -v
 """
-import pytest
 
+import pytest
 
 # These tests require a running instance with the env vars set
 # pytest.ini or conftest.py should configure the base URL
@@ -20,20 +20,26 @@ class TestHealthEndpoints:
 
 class TestAuthFlow:
     def test_login_with_demo_credentials(self, client):
-        resp = client.post(f"{BASE_URL}/auth/login", json={
-            "email": "demo@hexagon.com",
-            "password": "Clarion2026!",
-        })
+        resp = client.post(
+            f"{BASE_URL}/auth/login",
+            json={
+                "email": "demo@hexagon.com",
+                "password": "Clarion2026!",
+            },
+        )
         assert resp.status_code == 200
         data = resp.json()
         assert "access_token" in data
         assert "user" in data
 
     def test_login_wrong_password(self, client):
-        resp = client.post(f"{BASE_URL}/auth/login", json={
-            "email": "demo@hexagon.com",
-            "password": "wrong",
-        })
+        resp = client.post(
+            f"{BASE_URL}/auth/login",
+            json={
+                "email": "demo@hexagon.com",
+                "password": "wrong",
+            },
+        )
         assert resp.status_code == 401
 
     def test_me_without_token(self, client):

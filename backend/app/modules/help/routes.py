@@ -1,8 +1,9 @@
 """Help module API routes."""
-from fastapi import APIRouter, Depends
-from app.auth.dependencies import get_current_user, CurrentUser
-from app.modules.help.schemas import HelpSectionResponse, HelpSearchResult, HelpSearchRequest
+
+from app.auth.dependencies import CurrentUser, get_current_user
+from app.modules.help.schemas import HelpSearchRequest, HelpSearchResult, HelpSectionResponse
 from app.modules.help.service import HelpService
+from fastapi import APIRouter, Depends
 
 router = APIRouter(prefix="/help", tags=["help"])
 _service = HelpService()
@@ -19,6 +20,7 @@ async def get_section(section_id: str, user: CurrentUser = Depends(get_current_u
     section = _service.get_section(section_id)
     if not section:
         from fastapi import HTTPException
+
         raise HTTPException(404, f"Section '{section_id}' not found")
     return HelpSectionResponse(**section.__dict__)
 
