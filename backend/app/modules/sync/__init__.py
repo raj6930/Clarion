@@ -1,19 +1,16 @@
-"""Clarion — Sync Module. Salesforce data synchronisation."""
-
-from fastapi import FastAPI
-from app.registry import ModuleManifest
-
-manifest = ModuleManifest(
-    id="sync",
-    name="Salesforce Sync",
-    version="1.0.0",
-    description="Salesforce CLI data synchronisation with incremental sync and retry logic.",
-    dependencies=[],
-    required_permissions=["sync:read", "sync:trigger"],
-    admin_configurable=True,
-    chatbot_tools=["get_sync_status", "trigger_sync"],
-)
-
-def register(app: FastAPI) -> None:
-    from .routes import router
-    app.include_router(router, prefix="/api/v1/sync", tags=["Sync"])
+"""
+Sync module — Salesforce data synchronisation.
+Handles team sync (by case owner) and account sync (by AccountId).
+"""
+MODULE_MANIFEST = {
+    "name": "sync",
+    "version": "1.0.0",
+    "description": "Salesforce data synchronisation for cases, events, and accounts.",
+    "dependencies": [],
+    "feature_flag": "module_sync",
+    "routes_module": "app.modules.sync.routes",
+    "routes_prefix": "/api/v1",
+    "events_produced": ["sync.team.completed", "sync.account.completed", "sync.failed"],
+    "events_consumed": [],
+    "chatbot_tools": [],
+}
