@@ -1,0 +1,24 @@
+{
+  "id": "executive",
+  "name": "Executive",
+  "description": "Three large ring gauge KPIs, single trend chart, two summary metrics. Deliberately sparse. Inspired by Vercel.",
+  "thumbnail": "/layouts/thumbnails/executive.svg",
+  "grid": {
+    "areas": [
+      "ring1 ring2 ring3",
+      "chart chart chart",
+      "stat1 stat1 stat2"
+    ],
+    "columns": "1fr 1fr 1fr",
+    "rows": "auto 1fr auto",
+    "gap": "16px"
+  },
+  "widgets": {
+    "ring1": { "type": "RingGauge", "metric": "open_cases" },
+    "ring2": { "type": "RingGauge", "metric": "sla_compliance" },
+    "ring3": { "type": "RingGauge", "metric": "csat_score" },
+    "chart": { "type": "LineChart", "metric": "volume_trend" },
+    "stat1": { "type": "StatCard", "metric": "resolution_time" },
+    "stat2": { "type": "StatCard", "metric": "active_escalations" }
+  }
+}

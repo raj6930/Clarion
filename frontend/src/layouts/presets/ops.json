@@ -1,0 +1,32 @@
+{
+  "id": "ops",
+  "name": "Operations",
+  "description": "Split view: scrollable case card queue with severity/sentiment on the left, contextual metrics and charts on the right. Inspired by SupportLogic.",
+  "thumbnail": "/layouts/thumbnails/ops.svg",
+  "layout": "split",
+  "split": {
+    "left": { "width": "340px", "widget": { "type": "CaseCardQueue", "metric": "attention_cases" } },
+    "right": {
+      "grid": {
+        "areas": [
+          "s1 s2",
+          "s3 s4",
+          "chart chart",
+          "pri eng"
+        ],
+        "columns": "1fr 1fr",
+        "rows": "auto auto auto auto",
+        "gap": "10px"
+      },
+      "widgets": {
+        "s1": { "type": "StatCard", "metric": "open_cases" },
+        "s2": { "type": "StatCard", "metric": "p1p2_active" },
+        "s3": { "type": "StatCard", "metric": "resolution_time" },
+        "s4": { "type": "StatCard", "metric": "sla_compliance" },
+        "chart": { "type": "BarChart", "metric": "volume_daily" },
+        "pri": { "type": "PriorityBars", "metric": "priority_distribution" },
+        "eng": { "type": "EngineerLoad", "metric": "engineer_workload" }
+      }
+    }
+  }
+}

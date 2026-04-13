@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Colour tokens — Blue palette defaults */
+  --clarion-primary: #2563EB;
+  --clarion-accent: #3B82F6;
+  --clarion-bg: #F1F5F9;
+  --clarion-surface: #FFFFFF;
+  --clarion-text: #0F172A;
+  --clarion-text-muted: #64748B;
+  --clarion-border: #E2E8F0;
+  --clarion-success: #16A34A;
+  --clarion-warning: #D97706;
+  --clarion-danger: #DC2626;
+  --clarion-info: #2563EB;
+
+  /* Typography tokens */
+  --clarion-font: 'Geist Sans', system-ui, -apple-system, sans-serif;
+  --clarion-font-mono: 'Geist Mono', 'SF Mono', monospace;
+
+  /* Spacing tokens — comfortable density defaults */
+  --clarion-radius: 14px;
+  --clarion-gap: 14px;
+  --clarion-card-padding: 18px;
+  --clarion-font-size: 13px;
+}
+
+[data-theme="dark"] {
+  --clarion-bg: #0C1220;
+  --clarion-surface: #151E2E;
+  --clarion-text: #E8ECF1;
+  --clarion-text-muted: #7B8CA1;
+  --clarion-border: #243044;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--clarion-font);
+  font-size: var(--clarion-font-size);
+  background: var(--clarion-bg);
+  color: var(--clarion-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code, .font-mono { font-family: var(--clarion-font-mono); }
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--clarion-border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--clarion-text-muted); }

@@ -1,0 +1,27 @@
+{
+  "id": "editorial",
+  "name": "Editorial",
+  "description": "Hero metric with contextual summary, stacked side KPIs, trend chart, and attention table. Inspired by Stripe.",
+  "thumbnail": "/layouts/thumbnails/editorial.svg",
+  "grid": {
+    "areas": [
+      "hero hero hero side1",
+      "hero hero hero side2",
+      "hero hero hero side3",
+      "chart chart pri pri",
+      "table table table table"
+    ],
+    "columns": "1fr 1fr 1fr 200px",
+    "rows": "auto auto auto auto 1fr",
+    "gap": "14px"
+  },
+  "widgets": {
+    "hero": { "type": "SparklineCard", "metric": "open_cases", "size": "lg" },
+    "side1": { "type": "StatCard", "metric": "resolution_time" },
+    "side2": { "type": "StatCard", "metric": "sla_compliance" },
+    "side3": { "type": "StatCard", "metric": "csat_score" },
+    "chart": { "type": "BarChart", "metric": "volume_daily" },
+    "pri": { "type": "PriorityBars", "metric": "priority_distribution" },
+    "table": { "type": "AttentionTable", "metric": "attention_cases" }
+  }
+}

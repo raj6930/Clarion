@@ -1,0 +1,25 @@
+{
+  "id": "command",
+  "name": "Command Center",
+  "description": "Dense 4-card metric strip, dual charts, full-width table. Maximum info density. Inspired by Linear/Grafana.",
+  "thumbnail": "/layouts/thumbnails/command.svg",
+  "grid": {
+    "areas": [
+      "s1 s2 s3 s4",
+      "chart1 chart1 chart2 chart2",
+      "table table table table"
+    ],
+    "columns": "1fr 1fr 1fr 1fr",
+    "rows": "auto auto 1fr",
+    "gap": "12px"
+  },
+  "widgets": {
+    "s1": { "type": "StatCard", "metric": "open_cases" },
+    "s2": { "type": "StatCard", "metric": "p1p2_active" },
+    "s3": { "type": "StatCard", "metric": "resolution_time" },
+    "s4": { "type": "StatCard", "metric": "sla_compliance" },
+    "chart1": { "type": "BarChart", "metric": "volume_daily" },
+    "chart2": { "type": "LineChart", "metric": "resolution_trend" },
+    "table": { "type": "AttentionTable", "metric": "attention_cases" }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "flow",
+  "name": "Flow",
+  "description": "Full-width single column: metrics bar, chart, table stacked vertically. Optimised for vertical scanning and narrow screens.",
+  "thumbnail": "/layouts/thumbnails/flow.svg",
+  "grid": {
+    "areas": [
+      "s1 s2 s3 s4",
+      "chart chart chart chart",
+      "table table table table"
+    ],
+    "columns": "1fr 1fr 1fr 1fr",
+    "rows": "auto 1fr 1fr",
+    "gap": "14px"
+  },
+  "widgets": {
+    "s1": { "type": "StatCard", "metric": "open_cases" },
+    "s2": { "type": "StatCard", "metric": "p1p2_active" },
+    "s3": { "type": "StatCard", "metric": "resolution_time" },
+    "s4": { "type": "StatCard", "metric": "sla_compliance" },
+    "chart": { "type": "BarChart", "metric": "volume_daily" },
+    "table": { "type": "AttentionTable", "metric": "attention_cases" }
+  }
+}

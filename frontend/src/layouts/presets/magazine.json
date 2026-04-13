@@ -1,0 +1,27 @@
+{
+  "id": "magazine",
+  "name": "Magazine",
+  "description": "Asymmetric editorial grid with featured insight card, 2x2 metric tiles, mixed chart/table below. Inspired by Fireart Studio.",
+  "thumbnail": "/layouts/thumbnails/magazine.svg",
+  "grid": {
+    "areas": [
+      "insight insight s1 s2",
+      "insight insight s3 s4",
+      "chart1 chart1 pri pri",
+      "table table table table"
+    ],
+    "columns": "1fr 1fr 1fr 1fr",
+    "rows": "auto auto auto 1fr",
+    "gap": "14px"
+  },
+  "widgets": {
+    "insight": { "type": "InsightCard", "metric": "weekly_insight" },
+    "s1": { "type": "StatCard", "metric": "resolution_time" },
+    "s2": { "type": "StatCard", "metric": "csat_score" },
+    "s3": { "type": "StatCard", "metric": "sla_compliance" },
+    "s4": { "type": "StatCard", "metric": "p1p2_active" },
+    "chart1": { "type": "BarChart", "metric": "volume_daily" },
+    "pri": { "type": "PriorityBars", "metric": "priority_distribution" },
+    "table": { "type": "AttentionTable", "metric": "attention_cases" }
+  }
+}
