@@ -35,7 +35,7 @@ export function Header({ sidebarCollapsed }: { sidebarCollapsed: boolean }) {
     <header className={`fixed top-0 right-0 h-[56px] bg-[var(--clarion-surface)] border-b border-[var(--clarion-border)] z-20 flex items-center justify-between px-6 transition-all duration-200 ${sidebarCollapsed ? 'left-[56px]' : 'left-[228px]'}`}>
       <div className="flex items-center gap-4">
         <div className="text-sm">
-          <span className="font-semibold text-[var(--clarion-text)]">{user?.teamName}</span>
+          <span className="font-semibold text-[var(--clarion-text)]">{user?.team_name}</span>
           <span className="text-[var(--clarion-text-muted)] ml-1">· 12 engineers</span>
         </div>
         <ViewToggle />

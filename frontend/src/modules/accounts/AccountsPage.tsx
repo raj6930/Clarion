@@ -14,7 +14,7 @@ const mockCases = [
 ];
 
 export default function AccountsPage() {
-  const { isCSM, isManager } = useAuth();
+  const { isCSM } = useAuth();
   const [expandedAccount, setExpandedAccount] = useState<string | null>(null);
 
   return (

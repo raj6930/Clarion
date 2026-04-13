@@ -1,7 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '@/stores/authContext';
 import { useTheme } from '@/theme/ThemeProvider';
-import { useState } from 'react';
 
 const navSections = [
   { label: 'Overview', items: [
@@ -96,12 +95,12 @@ export function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle:
       {/* User */}
       <div className={`border-t border-[var(--clarion-border)] flex items-center gap-[10px] ${collapsed ? 'justify-center p-[10px]' : 'p-[14px_16px]'}`}>
         <div className="w-[34px] h-[34px] rounded-[10px] bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
-          {user?.displayName?.split(' ').map(n => n[0]).join('') || '?'}
+          {user?.display_name?.split(' ').map((n: string) => n[0]).join('') || '?'}
         </div>
         {!collapsed && (
           <div className="overflow-hidden">
-            <p className="text-xs font-medium text-[var(--clarion-text)] truncate">{user?.displayName}</p>
-            <p className="text-[10px] text-[var(--clarion-text-muted)]">{user?.teamName}</p>
+            <p className="text-xs font-medium text-[var(--clarion-text)] truncate">{user?.display_name}</p>
+            <p className="text-[10px] text-[var(--clarion-text-muted)]">{user?.team_name}</p>
           </div>
         )}
       </div>

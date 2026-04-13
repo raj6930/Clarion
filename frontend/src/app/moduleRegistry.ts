@@ -16,7 +16,7 @@
  *   };
  */
 
-import { ComponentType, LazyExoticComponent } from 'react';
+import { ComponentType } from 'react';
 
 // ─── Types ───
 

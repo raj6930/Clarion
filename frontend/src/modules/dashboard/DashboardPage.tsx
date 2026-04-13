@@ -88,7 +88,7 @@ export default function DashboardPage() {
     <div>
       <div className="mb-4">
         <h1 className="text-base font-semibold text-[var(--clarion-text)] tracking-tight">
-          {user?.teamName ?? 'Dashboard'}
+          {user?.team_name ?? 'Dashboard'}
         </h1>
         <p className="text-[11px] text-[var(--clarion-text-muted)] mt-0.5">
           {viewMode === 'team' ? '12 engineers' : 'Account overview'} · {preset.name} layout
