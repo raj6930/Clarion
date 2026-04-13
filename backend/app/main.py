@@ -71,12 +71,14 @@ def create_app() -> FastAPI:
     from app.api.v1.routes.admin import router as admin_router
     from app.api.v1.routes.appearance import router as appearance_router
     from app.api.v1.routes.appearance import preferences_router
+    from app.intelligence.routes import router as ai_router
 
     app.include_router(health_router, prefix="/api/v1", tags=["Health"])
     app.include_router(auth_router, prefix="/api/v1/auth", tags=["Authentication"])
     app.include_router(admin_router, prefix="/api/v1/admin", tags=["Administration"])
     app.include_router(appearance_router, prefix="/api/v1", tags=["Appearance"])
     app.include_router(preferences_router, prefix="/api/v1", tags=["Preferences"])
+    app.include_router(ai_router, prefix="/api/v1", tags=["Intelligence"])
 
     return app
 
