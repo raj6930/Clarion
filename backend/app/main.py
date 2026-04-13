@@ -9,6 +9,7 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.middleware import RateLimitMiddleware, SecurityHeadersMiddleware, RequestLoggingMiddleware, InputSanitisationMiddleware
 
 from app.config import settings
 from app.registry import registry
@@ -63,6 +64,12 @@ def create_app() -> FastAPI:
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
+    )n
+    # ─── Security middleware ───n
+    app.add_middleware(SecurityHeadersMiddleware)n
+    app.add_middleware(RequestLoggingMiddleware)n
+    app.add_middleware(InputSanitisationMiddleware)n
+    app.add_middleware(RateLimitMiddleware, requests_per_minute=120
     )
 
     # ─── Core routes (always active, not module-registered) ───
