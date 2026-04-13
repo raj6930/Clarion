@@ -1,6 +1,7 @@
 """Clarion — Accounts Module. Account-based access for managers, CSMs, and account teams."""
-from fastapi import FastAPI
+
 from app.registry import ModuleManifest
+from fastapi import FastAPI
 
 manifest = ModuleManifest(
     id="accounts",
@@ -18,6 +19,8 @@ manifest = ModuleManifest(
     ],
 )
 
+
 def register(app: FastAPI) -> None:
     from .routes import router
+
     app.include_router(router, prefix="/api/v1/accounts", tags=["Accounts"])

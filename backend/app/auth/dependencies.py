@@ -2,11 +2,9 @@
 FastAPI dependencies for authentication and authorisation.
 Provides get_current_user, require_role, and require_any_role.
 """
-from typing import Optional
-from functools import wraps
 
 from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from app.auth.security import decode_token
 
@@ -15,6 +13,7 @@ security = HTTPBearer(auto_error=False)
 
 class CurrentUser:
     """Authenticated user context available in route handlers."""
+
     def __init__(self, user_id: str, email: str, role: str, org_id: str, display_name: str = ""):
         self.user_id = user_id
         self.email = email
@@ -36,7 +35,7 @@ class CurrentUser:
 
 
 async def get_current_user(
-    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security),
+    credentials: HTTPAuthorizationCredentials | None = Depends(security),
 ) -> CurrentUser:
     """Extract and validate JWT from Authorization header."""
     if not credentials:
@@ -66,6 +65,7 @@ async def get_current_user(
 
 def require_role(*allowed_roles: str):
     """Dependency factory that restricts access to specific roles."""
+
     async def _check(user: CurrentUser = Depends(get_current_user)):
         if user.role not in allowed_roles:
             raise HTTPException(
@@ -73,6 +73,7 @@ def require_role(*allowed_roles: str):
                 detail=f"Requires role: {', '.join(allowed_roles)}",
             )
         return user
+
     return _check
 
 

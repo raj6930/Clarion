@@ -2,11 +2,11 @@
 Security Middleware
 Rate limiting, request validation, security headers, and audit logging.
 """
+
 import logging
 import time
 from collections import defaultdict
-from datetime import datetime, timezone
-from typing import Callable
+from collections.abc import Callable
 
 from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -56,7 +56,6 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
         response.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
         response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
-        response.headers.pop("Server", None)
         return response
 
 

@@ -1,6 +1,7 @@
 """Clarion test configuration."""
 
 import os
+
 import pytest
 
 # Ensure test environment

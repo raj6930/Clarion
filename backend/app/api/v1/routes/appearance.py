@@ -2,18 +2,44 @@
 Appearance and User Preferences API.
 Layout presets, theme resolution, and user preference management.
 """
+
 from fastapi import APIRouter, Depends
-from app.auth.dependencies import get_current_user, require_admin, CurrentUser
+
+from app.auth.dependencies import CurrentUser, get_current_user, require_admin
 
 router = APIRouter(prefix="/appearance", tags=["appearance"])
 
 LAYOUT_PRESETS = [
-    {"id": "editorial", "name": "Editorial", "description": "Hero metric with contextual summary, stacked side KPIs, trend chart, attention table."},
-    {"id": "command", "name": "Command Center", "description": "Dense 4-card strip, dual charts, full table. Maximum info density."},
-    {"id": "executive", "name": "Executive", "description": "Three ring gauges, single trend chart. Deliberately sparse."},
-    {"id": "ops", "name": "Operations", "description": "Split view: case card queue with severity/sentiment, contextual metrics."},
-    {"id": "magazine", "name": "Magazine", "description": "Asymmetric editorial grid with featured insight card, 2x2 tiles."},
-    {"id": "flow", "name": "Flow", "description": "Full-width single column: metrics bar, chart, table stacked."},
+    {
+        "id": "editorial",
+        "name": "Editorial",
+        "description": "Hero metric with contextual summary, stacked side KPIs, trend chart, attention table.",
+    },
+    {
+        "id": "command",
+        "name": "Command Center",
+        "description": "Dense 4-card strip, dual charts, full table. Maximum info density.",
+    },
+    {
+        "id": "executive",
+        "name": "Executive",
+        "description": "Three ring gauges, single trend chart. Deliberately sparse.",
+    },
+    {
+        "id": "ops",
+        "name": "Operations",
+        "description": "Split view: case card queue with severity/sentiment, contextual metrics.",
+    },
+    {
+        "id": "magazine",
+        "name": "Magazine",
+        "description": "Asymmetric editorial grid with featured insight card, 2x2 tiles.",
+    },
+    {
+        "id": "flow",
+        "name": "Flow",
+        "description": "Full-width single column: metrics bar, chart, table stacked.",
+    },
 ]
 
 

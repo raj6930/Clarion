@@ -1,6 +1,7 @@
 """Health check endpoint — always active, not module-registered."""
 
 from fastapi import APIRouter
+
 from app.registry import registry
 
 router = APIRouter()

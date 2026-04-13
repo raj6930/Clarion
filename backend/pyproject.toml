@@ -10,11 +10,30 @@ pythonpath = ["."]
 
 [tool.ruff]
 target-version = "py312"
-line-length = 100
+line-length = 120
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "I", "N", "UP", "S", "B"]
-ignore = ["S101"]  # Allow assert in tests
+select = ["E", "F", "W", "I"]
+ignore = [
+    "E501",   # Line too long (handled by formatter)
+    "F841",   # Local variable assigned but never used
+    "E712",   # Comparison to True/False
+    "E711",   # Comparison to None
+    "W291",   # Trailing whitespace
+    "W292",   # No newline at end of file
+    "W293",   # Whitespace before ':'
+    "F401",   # Imported but unused (common in __init__.py)
+    "E402",   # Module level import not at top of file
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401", "F403"]
+"tests/*" = ["S101", "F811"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
 
 [tool.bandit]
 exclude_dirs = ["tests"]

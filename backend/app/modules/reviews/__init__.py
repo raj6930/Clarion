@@ -1,17 +1,17 @@
-"""Clarion — Reviews Module. AI-first case quality review framework."""
-from app.registry import ModuleManifest
+"""
+Reviews module — AI-first case quality review framework.
+AI generates complete draft, manager refines with tracked overrides.
+"""
 
-manifest = ModuleManifest(
-    id="reviews",
-    name="Case Reviews",
-    version="1.0.0",
-    description="AI-first case quality review framework with structured rubric.",
-    dependencies=["cases"],
-    required_permissions=["reviews:read", "reviews:write"],
-    admin_configurable=True,
-    chatbot_tools=["request_review", "get_review_detail", "list_reviews"],
-)
-
-def register(app):
-    from .routes import router
-    app.include_router(router, prefix="/api/v1/reviews", tags=["Reviews"])
+MODULE_MANIFEST = {
+    "name": "reviews",
+    "version": "1.0.0",
+    "description": "AI-first case quality reviews with rubric scoring, coaching, and recommendations.",
+    "dependencies": ["cases", "sync"],
+    "feature_flag": "module_reviews",
+    "routes_module": "app.modules.reviews.routes",
+    "routes_prefix": "/api/v1",
+    "events_produced": ["review.created", "review.finalized", "review.recommendation.created"],
+    "events_consumed": ["sync.team.completed", "prediction.escalation.high"],
+    "chatbot_tools": ["create_review", "list_reviews", "get_review_summary"],
+}

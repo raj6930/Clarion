@@ -1,7 +1,7 @@
 """Unit tests for security middleware."""
-import pytest
+
 import time
-from unittest.mock import AsyncMock, MagicMock
+
 from app.middleware.security import RateLimitMiddleware, SecurityHeadersMiddleware
 
 

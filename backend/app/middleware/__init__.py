@@ -1,8 +1,8 @@
 from .security import (
-    RateLimitMiddleware,
-    SecurityHeadersMiddleware,
-    RequestLoggingMiddleware,
     InputSanitisationMiddleware,
+    RateLimitMiddleware,
+    RequestLoggingMiddleware,
+    SecurityHeadersMiddleware,
 )
 
 __all__ = [

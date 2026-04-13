@@ -3,9 +3,8 @@ Clarion — Application Configuration
 Loaded from environment variables with validation at startup.
 """
 
-from pydantic_settings import BaseSettings
 from pydantic import Field
-from typing import Optional
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
@@ -20,17 +19,11 @@ class Settings(BaseSettings):
 
     @property
     def database_url(self) -> str:
-        return (
-            f"postgresql+asyncpg://{self.db_user}:{self.db_password}"
-            f"@{self.db_host}:{self.db_port}/{self.db_name}"
-        )
+        return f"postgresql+asyncpg://{self.db_user}:{self.db_password}@{self.db_host}:{self.db_port}/{self.db_name}"
 
     @property
     def database_url_sync(self) -> str:
-        return (
-            f"postgresql://{self.db_user}:{self.db_password}"
-            f"@{self.db_host}:{self.db_port}/{self.db_name}"
-        )
+        return f"postgresql://{self.db_user}:{self.db_password}@{self.db_host}:{self.db_port}/{self.db_name}"
 
     # ─── Redis ───
     redis_url: str = Field("redis://clarion-redis:6379/0", alias="CLARION_REDIS_URL")
@@ -56,8 +49,8 @@ class Settings(BaseSettings):
     default_local_model: str = Field("gemma2", alias="CLARION_DEFAULT_LOCAL_MODEL")
 
     # ─── External AI ───
-    claude_api_key: Optional[str] = Field(None, alias="CLARION_CLAUDE_API_KEY")
-    openai_api_key: Optional[str] = Field(None, alias="CLARION_OPENAI_API_KEY")
+    claude_api_key: str | None = Field(None, alias="CLARION_CLAUDE_API_KEY")
+    openai_api_key: str | None = Field(None, alias="CLARION_OPENAI_API_KEY")
 
     # ─── Application ───
     log_level: str = Field("INFO", alias="CLARION_LOG_LEVEL")
@@ -66,11 +59,11 @@ class Settings(BaseSettings):
     environment: str = Field("development", alias="CLARION_ENVIRONMENT")
 
     # ─── Email ───
-    smtp_host: Optional[str] = Field(None, alias="CLARION_SMTP_HOST")
+    smtp_host: str | None = Field(None, alias="CLARION_SMTP_HOST")
     smtp_port: int = Field(587, alias="CLARION_SMTP_PORT")
-    smtp_user: Optional[str] = Field(None, alias="CLARION_SMTP_USER")
-    smtp_password: Optional[str] = Field(None, alias="CLARION_SMTP_PASSWORD")
-    smtp_from: Optional[str] = Field(None, alias="CLARION_SMTP_FROM")
+    smtp_user: str | None = Field(None, alias="CLARION_SMTP_USER")
+    smtp_password: str | None = Field(None, alias="CLARION_SMTP_PASSWORD")
+    smtp_from: str | None = Field(None, alias="CLARION_SMTP_FROM")
 
     class Config:
         env_file = ".env"

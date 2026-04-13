@@ -1,5 +1,5 @@
 """Unit tests for help documentation service."""
-import pytest
+
 from app.modules.help.service import HelpService
 
 

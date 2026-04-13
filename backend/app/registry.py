@@ -1,13 +1,13 @@
 """
 Clarion — Module Registry
-Core extensibility framework. Modules self-register their routes, tasks, 
-chatbot tools, and permissions. New features are added without modifying 
+Core extensibility framework. Modules self-register their routes, tasks,
+chatbot tools, and permissions. New features are added without modifying
 existing code.
 
 Usage:
     # In a module's __init__.py:
     from app.registry import ModuleManifest, registry
-    
+
     manifest = ModuleManifest(
         id="cases",
         name="Case Management",
@@ -16,7 +16,7 @@ Usage:
         required_permissions=["cases:read"],
         chatbot_tools=["query_cases", "get_case_detail"],
     )
-    
+
     def register(app):
         from .routes import router
         app.include_router(router, prefix="/api/v1/cases", tags=["Cases"])
@@ -26,9 +26,10 @@ from __future__ import annotations
 
 import importlib
 import logging
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Any
 
 from fastapi import FastAPI
 
@@ -47,7 +48,7 @@ class ModuleManifest:
     required_permissions: list[str] = field(default_factory=list)
     admin_configurable: bool = False
     chatbot_tools: list[str] = field(default_factory=list)
-    health_check: Optional[Callable] = None
+    health_check: Callable | None = None
 
 
 @dataclass
@@ -58,13 +59,13 @@ class RegisteredModule:
     register_fn: Callable
     enabled: bool = True
     healthy: bool = True
-    error: Optional[str] = None
+    error: str | None = None
 
 
 class ModuleRegistry:
     """
     Discovers, validates, and activates feature modules.
-    
+
     Lifecycle:
     1. discover() — scans modules/ directory for manifests
     2. resolve_dependencies() — validates dependency graph
@@ -113,9 +114,7 @@ class ModuleRegistry:
                 mod = importlib.import_module(module_name)
 
                 if not hasattr(mod, "manifest") or not hasattr(mod, "register"):
-                    logger.warning(
-                        f"Module {module_dir.name} missing 'manifest' or 'register', skipping"
-                    )
+                    logger.warning(f"Module {module_dir.name} missing 'manifest' or 'register', skipping")
                     continue
 
                 manifest: ModuleManifest = mod.manifest

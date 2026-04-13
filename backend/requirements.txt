@@ -27,7 +27,7 @@ email-validator==2.2.0
 
 # ─── AI / NLP ───
 httpx==0.28.1
-spacy==3.8.4
+spacy>=3.8.0,<4.0
 
 # ─── Security ───
 python-multipart==0.0.20

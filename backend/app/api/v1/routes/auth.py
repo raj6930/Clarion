@@ -2,16 +2,24 @@
 Authentication endpoints: register, login, refresh, me, change-password, logout.
 Phase 2: In-memory user store for development. Phase 3: PostgreSQL via SQLAlchemy.
 """
-from datetime import timedelta
+
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from app.auth.security import (
-    hash_password, verify_password, create_access_token, create_refresh_token, decode_token,
-)
-from app.auth.dependencies import get_current_user, CurrentUser
+from app.auth.dependencies import CurrentUser, get_current_user
 from app.auth.schemas import (
-    RegisterRequest, LoginRequest, TokenResponse, UserResponse,
-    RefreshRequest, ChangePasswordRequest,
+    ChangePasswordRequest,
+    LoginRequest,
+    RefreshRequest,
+    RegisterRequest,
+    TokenResponse,
+    UserResponse,
+)
+from app.auth.security import (
+    create_access_token,
+    create_refresh_token,
+    decode_token,
+    hash_password,
+    verify_password,
 )
 from app.config import settings
 
@@ -35,21 +43,29 @@ _users: dict[str, dict] = {
 
 def _user_to_response(u: dict) -> UserResponse:
     return UserResponse(
-        id=u["id"], email=u["email"], display_name=u["display_name"],
-        role=u["role"], org_id=u["org_id"], org_name=u["org_name"],
+        id=u["id"],
+        email=u["email"],
+        display_name=u["display_name"],
+        role=u["role"],
+        org_id=u["org_id"],
+        org_name=u["org_name"],
         team_name=u.get("team_name"),
     )
 
 
 def _create_tokens(u: dict) -> TokenResponse:
     token_data = {
-        "sub": u["id"], "email": u["email"], "role": u["role"],
-        "org_id": u["org_id"], "name": u["display_name"],
+        "sub": u["id"],
+        "email": u["email"],
+        "role": u["role"],
+        "org_id": u["org_id"],
+        "name": u["display_name"],
     }
     access = create_access_token(token_data)
     refresh = create_refresh_token(token_data)
     return TokenResponse(
-        access_token=access, refresh_token=refresh,
+        access_token=access,
+        refresh_token=refresh,
         expires_in=settings.jwt_expire_minutes * 60,
         user=_user_to_response(u),
     )

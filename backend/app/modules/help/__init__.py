@@ -1,4 +1,5 @@
 """Help module — searchable documentation viewer and chatbot knowledge base."""
+
 MODULE_MANIFEST = {
     "name": "help",
     "version": "1.0.0",

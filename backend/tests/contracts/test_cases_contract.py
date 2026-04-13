@@ -3,18 +3,16 @@ Contract tests for the Cases module.
 Validates SF-validated schemas and inter-module consumption.
 """
 
-import pytest
-from datetime import datetime, timezone
-from pydantic import ValidationError
+from datetime import UTC, datetime
 
+import pytest
 from app.modules.cases.schemas import (
-    CaseSummaryResponse,
-    CaseListItem,
-    CaseEventResponse,
-    CaseSyncedEvent,
     AccountSearchResult,
-    MonitoredAccountResponse,
+    CaseEventResponse,
+    CaseSummaryResponse,
+    CaseSyncedEvent,
 )
+from pydantic import ValidationError
 
 
 class TestCaseSummaryContract:
@@ -35,10 +33,10 @@ class TestCaseSummaryContract:
             support_area="Cloud Performance",  # SF: PPMArea__c
             environment="Production",
             product_version="9.2",  # SF: Reported_Version__c
-            opened_date=datetime(2026, 3, 31, 5, 19, 32, tzinfo=timezone.utc),
-            resolved_date=datetime(2026, 3, 31, 6, 27, 29, tzinfo=timezone.utc),
-            closed_date=datetime(2026, 4, 2, 15, 37, 41, tzinfo=timezone.utc),
-            last_activity_at=datetime(2026, 4, 2, 15, 37, 31, tzinfo=timezone.utc),
+            opened_date=datetime(2026, 3, 31, 5, 19, 32, tzinfo=UTC),
+            resolved_date=datetime(2026, 3, 31, 6, 27, 29, tzinfo=UTC),
+            closed_date=datetime(2026, 4, 2, 15, 37, 41, tzinfo=UTC),
+            last_activity_at=datetime(2026, 4, 2, 15, 37, 31, tzinfo=UTC),
             case_age_days=2,
             is_escalated=False,
             sla_status="Within SLA",
@@ -59,11 +57,17 @@ class TestCaseSummaryContract:
 
     def test_optional_sf_fields_default_none(self):
         summary = CaseSummaryResponse(
-            case_id="test", sf_case_number="001", subject="Test",
-            status="Open", priority="P3", case_owner="eng1",
+            case_id="test",
+            sf_case_number="001",
+            subject="Test",
+            status="Open",
+            priority="P3",
+            case_owner="eng1",
             case_owner_name="Engineer One",
-            opened_date=datetime.now(tz=timezone.utc),
-            case_age_days=1, is_escalated=False, total_event_count=0,
+            opened_date=datetime.now(tz=UTC),
+            case_age_days=1,
+            is_escalated=False,
+            total_event_count=0,
         )
         assert summary.product is None
         assert summary.product_family is None
@@ -78,7 +82,7 @@ class TestCaseEventContract:
         event = CaseEventResponse(
             event_id="test-001",
             event_type="feed_text",
-            timestamp=datetime.now(tz=timezone.utc),
+            timestamp=datetime.now(tz=UTC),
             actor="Vikram Singh",
             actor_type="engineer",
             body="The customer is experiencing slowness within the application.",
@@ -91,7 +95,7 @@ class TestCaseEventContract:
         event = CaseEventResponse(
             event_id="test-002",
             event_type="email",
-            timestamp=datetime.now(tz=timezone.utc),
+            timestamp=datetime.now(tz=UTC),
             actor="rahul.uriti@hexagon.com",
             actor_type="customer",
             direction="inbound",
@@ -109,8 +113,9 @@ class TestCaseSyncedEventContract:
     def test_team_sync_event(self):
         event = CaseSyncedEvent(
             event_type="case.synced",
-            case_id="test-001", team_id="team-001",
-            timestamp=datetime.now(tz=timezone.utc),
+            case_id="test-001",
+            team_id="team-001",
+            timestamp=datetime.now(tz=UTC),
         )
         assert event.team_id == "team-001"
         assert event.sf_account_id is None
@@ -118,8 +123,9 @@ class TestCaseSyncedEventContract:
     def test_account_sync_event(self):
         event = CaseSyncedEvent(
             event_type="account_case.synced",
-            case_id="test-002", sf_account_id="0013t00002qwhPMAAY",
-            timestamp=datetime.now(tz=timezone.utc),
+            case_id="test-002",
+            sf_account_id="0013t00002qwhPMAAY",
+            timestamp=datetime.now(tz=UTC),
         )
         assert event.sf_account_id == "0013t00002qwhPMAAY"
         assert event.team_id is None
@@ -127,8 +133,10 @@ class TestCaseSyncedEventContract:
     def test_reviews_can_consume_sync_event(self):
         """Consumer: reviews module parses sync events for selection rules."""
         event = CaseSyncedEvent(
-            event_type="case.synced", case_id="test-001",
-            team_id="team-001", timestamp=datetime.now(tz=timezone.utc),
+            event_type="case.synced",
+            case_id="test-001",
+            team_id="team-001",
+            timestamp=datetime.now(tz=UTC),
         )
         assert hasattr(event, "case_id")
         assert hasattr(event, "team_id")
@@ -141,16 +149,21 @@ class TestAccountSearchContract:
         """Validated: 8 Transgrid accounts in Octave org."""
         results = [
             AccountSearchResult(
-                sf_account_id="0013Z00001bHm19QAC", name="Transgrid Ltd",
+                sf_account_id="0013Z00001bHm19QAC",
+                name="Transgrid Ltd",
                 account_type="O/O (Owner/Operator)",
                 industry="Public Sector/Gov - Admin",
-                billing_country="Australia", billing_state="New South Wales",
+                billing_country="Australia",
+                billing_state="New South Wales",
                 billing_city="Sydney",
             ),
             AccountSearchResult(
-                sf_account_id="0013t00002qwhPMAAY", name="Transgrid Ltd",
-                account_type="Cloud Estate", industry="Other",
-                billing_country="United States", billing_state="Alabama",
+                sf_account_id="0013t00002qwhPMAAY",
+                name="Transgrid Ltd",
+                account_type="Cloud Estate",
+                industry="Other",
+                billing_country="United States",
+                billing_state="Alabama",
                 billing_city="Madison",
             ),
         ]

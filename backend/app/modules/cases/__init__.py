@@ -6,9 +6,8 @@ This is the first feature module and serves as the reference
 implementation for the module registry pattern.
 """
 
-from fastapi import FastAPI
-
 from app.registry import ModuleManifest
+from fastapi import FastAPI
 
 manifest = ModuleManifest(
     id="cases",
