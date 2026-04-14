@@ -1,14 +1,13 @@
 /**
  * Dashboard Page
- * Reads the user's selected layout preset and renders the grid dynamically.
- * Widgets are resolved from the widget registry by type string.
- * Phase 0: Layout rendering with stub widgets.
- * Phase 7: Live data injection via dashboard API.
+ * Fetches data from /analytics/dashboard and provides it to all widgets
+ * via DashboardContext. Layout-driven rendering from preset configs.
  */
 import { Suspense, useMemo } from 'react';
 import { layoutRegistry, type LayoutPreset } from '@/layouts';
 import { widgetRegistry, type WidgetProps } from '@/components/widgets/registry';
 import { useAuth } from '@/stores/authContext';
+import { useDashboardFetch, DashboardContext } from '@/hooks/useDashboardData';
 
 function WidgetSlot({ type, metric, size }: { type: string; metric: string; size?: string }) {
   const Widget = widgetRegistry.get(type);
@@ -30,7 +29,7 @@ function GridLayout({ preset }: { preset: LayoutPreset }) {
   if (!preset.grid || !preset.widgets) return null;
   const { grid, widgets } = preset;
   const style = {
-    display: 'grid',
+    display: 'grid' as const,
     gridTemplateAreas: grid.areas.map(row => `"${row}"`).join(' '),
     gridTemplateColumns: grid.columns,
     gridTemplateRows: grid.rows,
@@ -60,7 +59,7 @@ function SplitLayout({ preset }: { preset: LayoutPreset }) {
       <div className="flex-1">
         {right.grid && right.widgets && (
           <div style={{
-            display: 'grid',
+            display: 'grid' as const,
             gridTemplateAreas: right.grid.areas.map(r => `"${r}"`).join(' '),
             gridTemplateColumns: right.grid.columns,
             gridTemplateRows: right.grid.rows,
@@ -80,25 +79,37 @@ function SplitLayout({ preset }: { preset: LayoutPreset }) {
 
 export default function DashboardPage() {
   const { user, viewMode } = useAuth();
-  // Phase 0: hardcoded to editorial. Phase 2: from user_preferences API.
+  const dashboardState = useDashboardFetch();
   const layoutId = 'editorial';
   const preset = useMemo(() => layoutRegistry.get(layoutId), [layoutId]);
 
   return (
-    <div>
-      <div className="mb-4">
-        <h1 className="text-base font-semibold text-[var(--clarion-text)] tracking-tight">
-          {user?.team_name ?? 'Dashboard'}
-        </h1>
-        <p className="text-[11px] text-[var(--clarion-text-muted)] mt-0.5">
-          {viewMode === 'team' ? '12 engineers' : 'Account overview'} · {preset.name} layout
-        </p>
+    <DashboardContext.Provider value={dashboardState}>
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h1 className="text-base font-semibold text-[var(--clarion-text)] tracking-tight">
+              {user?.team_name ?? 'Dashboard'}
+            </h1>
+            <p className="text-[11px] text-[var(--clarion-text-muted)] mt-0.5">
+              {viewMode === 'team' ? '6 engineers' : 'Account overview'} · {preset.name} layout
+            </p>
+          </div>
+          {dashboardState.error && (
+            <button onClick={dashboardState.refresh} className="text-[11px] text-red-500 hover:text-red-700 flex items-center gap-1">
+              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" />
+              </svg>
+              Retry
+            </button>
+          )}
+        </div>
+        {preset.layout === 'split' ? (
+          <SplitLayout preset={preset} />
+        ) : (
+          <GridLayout preset={preset} />
+        )}
       </div>
-      {preset.layout === 'split' ? (
-        <SplitLayout preset={preset} />
-      ) : (
-        <GridLayout preset={preset} />
-      )}
-    </div>
+    </DashboardContext.Provider>
   );
 }

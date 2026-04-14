@@ -1,11 +1,9 @@
 /**
  * Widget Registry
  * Maps widget type strings (from layout presets) to React components.
- * Adding a new widget: create component, import here, add to registry map.
  */
 import { lazy, ComponentType } from 'react';
 
-// Lazy-load all widgets for code splitting
 const StatCard = lazy(() => import('./StatCard'));
 const SparklineCard = lazy(() => import('./SparklineCard'));
 const RingGauge = lazy(() => import('./RingGauge'));
@@ -20,7 +18,7 @@ const InsightCard = lazy(() => import('./InsightCard'));
 
 export interface WidgetProps {
   metric: string;
-  data?: any;
+  data?: unknown;
   size?: 'sm' | 'md' | 'lg';
 }
 
